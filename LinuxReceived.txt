@@ -1,0 +1,7 @@
+[📥] Waiting for clipboard from Linux on port 65433
+
+
+end_clipboard_to_windows
+    s.connect((WINDOWS_CLIENT_IP, WINDOWS_RECEIVE_PORT))
+KeyboardInterrupt
+
