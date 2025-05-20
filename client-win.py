@@ -3,6 +3,11 @@ import pyperclip
 import keyboard
 import threading
 import time
+import ctypes
+from ctypes import wintypes
+import win32clipboard
+import win32con
+import win32com.client
 
 SERVER_IP = "192.168.20.103"  # Linux IP
 SERVER_PORT = 65432
@@ -19,10 +24,38 @@ def send_clipboard(text):
     except Exception as e:
         print(f"[!] Send failed: {e}")
 
+
+def get_clipboard_file_path():
+    try:
+        shell = win32com.client.Dispatch("Shell.Application")
+        win32clipboard.OpenClipboard()
+        data = win32clipboard.GetClipboardData(win32con.CF_HDROP)
+        win32clipboard.CloseClipboard()
+        if data:
+            return list(data)[0]  # only first file
+    except Exception:
+        return None
+
+def send_file_to_linux(file_path):
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+
+    file_name = os.path.basename(file_path)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.connect((SERVER_IP, SERVER_PORT))
+        sock.sendall(b"FILE\n")  # tell server it’s a file
+        sock.sendall(f"{file_name}\n".encode())
+        sock.sendall(file_data)
+    finally:
+        sock.close()
+
+
 def monitor_send_hotkey():
     global last_clipboard
     print("[⌨] Press CTRL+ALT+C to send clipboard to Linux.")
     while True:
+        # Send clipboard contents
         if keyboard.is_pressed("ctrl+alt+c"):
             current_text = pyperclip.paste()
             if current_text and current_text != last_clipboard:
@@ -32,6 +65,17 @@ def monitor_send_hotkey():
             else:
                 print("[i] Clipboard unchanged.")
                 time.sleep(1)
+
+        # Send Clipboard file to Linux
+        elif keyboard.is_pressed('ctrl+shift+alt+c'):
+            print("Detected CTRL+SHIFT+ALT+C — Sending clipboard file to Linux...")
+            file_path = get_clipboard_file_path()
+            if file_path:
+                send_file_to_linux(file_path)
+            else:
+                print("No file found in clipboard.")
+            time.sleep(1)
+
 
 def receive_from_linux():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -5,3 +5,39 @@ end_clipboard_to_windows
     s.connect((WINDOWS_CLIENT_IP, WINDOWS_RECEIVE_PORT))
 KeyboardInterrupt
 
+copied
+
+Linux
+
+[⇩] Received clipboard from Linux: copied
+
+DavoodYA
+
+Press CTRL+SHIFT+V to send clipboard to Windows.
+
+L+SHIFT+
+
+L+SHIFT+
+
+sudo systemd-resolve --set-dns=1.1.1.1 --interface=tun0
+
+PING youtube.com (216.58.206.78) 56(84) bytes of data.
+64 bytes from tzfraa-aa-in-f14.1e100.net (216.58.206.78): icmp_seq=1 ttl=111 time=136 ms
+64 bytes from mil07s08-in-f14.1e100.net (216.58.206.78): icmp_seq=2 ttl=111 time=133 ms
+64 bytes from tzfraa-aa-in-f14.1e100.net (216.58.206.78): icmp_seq=3 ttl=111 time=128 ms
+64 bytes from tzfraa-aa-in-f14.1e100.net (216.58.206.78): icmp_seq=4 ttl=111 time=239 ms
+64 bytes from lhr35s11-in-f14.1e100.net (216.58.206.78): icmp_seq=5 ttl=111 time=123 ms
+
+--- youtube.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4004ms
+rtt min/avg/max/mdev = 123.395/151.785/239.399/44.016 ms
+-- No entries --
+tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1200
+        inet 10.8.7.109  netmask 255.255.255.255  destination 10.8.7.109
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+        RX packets 15537  bytes 17023126 (17.0 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 9479  bytes 1290624 (1.2 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
