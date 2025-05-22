@@ -3,17 +3,50 @@ import threading
 import pyperclip
 import keyboard
 import time
+import os  # OS library used for saving files operations
 
-WINDOWS_CLIENT_IP = "192.168.20.100"  # آدرس IP ویندوز
-WINDOWS_RECEIVE_PORT = 65433  # پورتی که ویندوز گوش می‌دهد
+
+WINDOWS_CLIENT_IP = "192.168.20.100"  # Enter Windows IP
+WINDOWS_RECEIVE_PORT = 65433  # Windows Port Listener
+# Note: define allow firewall rule in Windows => wf.msc => inbound rules for above port
+
 
 def handle_client(conn, addr):
-    data = conn.recv(4096).decode("utf-8")
-    print(f"[⇧] Received from Windows: {data}")
-    with open("PCRecieved.txt", "a", encoding="utf-8") as f:
-        f.write(data + "\n\n")
-    pyperclip.copy(data)
-    print("[✓] Data written to PCRecieved.txt and copied to clipboard.")
+    first_bytes = conn.recv(5)
+
+    if first_bytes == b"FILE\n":
+        # Step 1: دریافت نام فایل
+        filename = b""
+        while not filename.endswith(b"\n"):
+            filename += conn.recv(1)
+        filename = filename.decode().strip()
+
+        # Step 2: ساخت دایرکتوری مقصد
+        os.makedirs("PC_Received", exist_ok=True)
+        save_path = os.path.join("PC_Received", filename)
+
+        # Step 3: ذخیره فایل در دیسک
+        with open(save_path, "wb") as f:
+            while True:
+                data = conn.recv(4096)
+                if not data:
+                    break
+                f.write(data)
+        print(f"[💾] File received from Windows and saved to {save_path}")
+
+    else:
+        # اگر متن ساده بود
+        data = first_bytes + conn.recv(4096)
+        try:
+            decoded = data.decode("utf-8")
+        except:
+            decoded = "[!] Could not decode clipboard content."
+        print(f"[⇧] Received from Windows: {decoded}")
+        with open("PCRecieved.txt", "a", encoding="utf-8") as f:
+            f.write(decoded + "\n\n")
+        pyperclip.copy(decoded)
+        print("[✓] Data written to PCRecieved.txt and copied to clipboard.")
+
     conn.close()
 
 def start_receive_server(port=65432):

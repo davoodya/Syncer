@@ -8,6 +8,7 @@ from ctypes import wintypes
 import win32clipboard
 import win32con
 import win32com.client
+import os
 
 SERVER_IP = "192.168.20.103"  # Linux IP
 SERVER_PORT = 65432
