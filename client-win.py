@@ -12,9 +12,11 @@ import os
 import tkinter as tk
 from tkinter import filedialog # used for asking files for sending to linux server
 
-SERVER_IP = "192.168.1.102"  # Linux IP
-SERVER_PORT = 65432 # Linux Port
+SERVER_IP = "192.168.1.101"  # Linux IP
+
+SERVER_PORT = 65432 # Linux Port should be the same as server side in start_receive_server()
 # Note: Ports should be same in both server and client sides
+
 CLIENT_RECEIVE_PORT = 65433  # for incoming data from Linux
 
 last_clipboard = ""
