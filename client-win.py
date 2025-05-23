@@ -9,9 +9,12 @@ import win32clipboard
 import win32con
 import win32com.client
 import os
+import tkinter as tk
+from tkinter import filedialog # used for asking files for sending to linux server
 
-SERVER_IP = "192.168.20.103"  # Linux IP
-SERVER_PORT = 65432
+SERVER_IP = "192.168.1.102"  # Linux IP
+SERVER_PORT = 65432 # Linux Port
+# Note: Ports should be same in both server and client sides
 CLIENT_RECEIVE_PORT = 65433  # for incoming data from Linux
 
 last_clipboard = ""
@@ -51,6 +54,27 @@ def send_file_to_linux(file_path):
     finally:
         sock.close()
 
+def send_files_to_linux():
+    root = tk.Tk()
+    root.withdraw()  # مخفی‌سازی پنجره اصلی
+    file_paths = filedialog.askopenfilenames(title="Select files to send to Linux")
+
+    for file_path in file_paths:
+        try:
+            with open(file_path, "rb") as f:
+                file_data = f.read()
+
+            file_name = os.path.basename(file_path)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((SERVER_IP, SERVER_PORT))
+            sock.sendall(b"FILE\n")
+            sock.sendall(f"{file_name}\n".encode())
+            sock.sendall(file_data)
+            sock.close()
+            print(f"[✓] Sent {file_name} to Linux.")
+        except Exception as e:
+            print(f"[!] Failed to send {file_path}: {e}")
+
 
 def monitor_send_hotkey():
     global last_clipboard
@@ -67,7 +91,7 @@ def monitor_send_hotkey():
                 print("[i] Clipboard unchanged.")
                 time.sleep(1)
 
-        # Send Clipboard file to Linux
+        # Send a Clipboard file to Linux
         elif keyboard.is_pressed('ctrl+shift+alt+c'):
             print("Detected CTRL+SHIFT+ALT+C — Sending clipboard file to Linux...")
             file_path = get_clipboard_file_path()
@@ -76,6 +100,12 @@ def monitor_send_hotkey():
             else:
                 print("No file found in clipboard.")
             time.sleep(1)
+
+        # Sending some files to linux server
+        elif keyboard.is_pressed("ctrl+alt+shift+f"):
+            print("🔍 File selection triggered...")
+            send_files_to_linux()
+            time.sleep(2)
 
 
 def receive_from_linux():

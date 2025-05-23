@@ -43,3 +43,17 @@ tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1200
 
 By Episodes/
 
+If your computer or network is protecte
+
+If your computer or network is protected by a firewall or proxy, make sure that Firefox is permitted to access the 
+
+sudo dpkg --add-architecture i386
+
+
+
+Errno
+
+192.168.1.103:
+
+PCRecieved.txt
+
