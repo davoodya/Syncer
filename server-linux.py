@@ -3,13 +3,10 @@ import threading
 import pyperclip
 import keyboard
 import time
-import os  # OS library used for saving files operations
+import os
 
-
-WINDOWS_CLIENT_IP = "192.168.20.100"  # Enter Windows IP
-WINDOWS_RECEIVE_PORT = 65433  # Windows Port Listener
-# Note: define allow firewall rule in Windows => wf.msc => inbound rules for above port
-
+WINDOWS_CLIENT_IP = "192.168.1.103"
+WINDOWS_RECEIVE_PORT = 65433
 
 def handle_client(conn, addr):
     first_bytes = conn.recv(5)

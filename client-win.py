@@ -107,24 +107,44 @@ def monitor_send_hotkey():
             send_files_to_linux()
             time.sleep(2)
 
-
 def receive_from_linux():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(("0.0.0.0", CLIENT_RECEIVE_PORT))
     server.listen(1)
-    print(f"[📥] Waiting for clipboard from Linux on port {CLIENT_RECEIVE_PORT}")
+    print(f"[📥] Waiting for clipboard or files from Linux on port {CLIENT_RECEIVE_PORT}")
 
     while True:
         conn, addr = server.accept()
-        data = conn.recv(4096).decode("utf-8")
-        print(f"[⇩] Received clipboard from Linux: {data}")
+        first_bytes = conn.recv(5)
 
-        with open("LinuxReceived.txt", "a", encoding="utf-8") as f:
-            f.write(data + "\n\n")
+        if first_bytes == b"FILE\n":
+            filename = b""
+            while not filename.endswith(b"\n"):
+                filename += conn.recv(1)
+            filename = filename.decode().strip()
 
-        pyperclip.copy(data)
-        print("[✓] Saved to LinuxReceived.txt and copied to clipboard.")
+            os.makedirs("Linux_Received", exist_ok=True)
+            save_path = os.path.join("Linux_Received", filename)
+
+            with open(save_path, "wb") as f:
+                while True:
+                    data = conn.recv(4096)
+                    if not data:
+                        break
+                    f.write(data)
+
+            print(f"[💾] File received from Linux and saved to {save_path}")
+        else:
+            # اگر داده متنی بود
+            data = first_bytes + conn.recv(4096)
+            decoded = data.decode("utf-8")
+            with open("LinuxReceived.txt", "a", encoding="utf-8") as f:
+                f.write(decoded + "\n\n")
+            pyperclip.copy(decoded)
+            print("[✓] Text saved and copied to clipboard.")
+
         conn.close()
+
 
 if __name__ == "__main__":
     threading.Thread(target=monitor_send_hotkey, daemon=True).start()
