@@ -14,6 +14,7 @@ WINDOWS_RECEIVE_PORT = 65433
 def handle_client(conn, addr):
     first_bytes = conn.recv(5)
 
+    # If received data is a file
     if first_bytes == b"FILE\n":
         # Step 1: دریافت نام فایل
         filename = b""
@@ -34,8 +35,9 @@ def handle_client(conn, addr):
                 f.write(data)
         print(f"[💾] File received from Windows and saved to {save_path}")
 
+    # If received data is a text
     else:
-        # اگر متن ساده بود
+        # If simple text
         data = first_bytes + conn.recv(4096)
         try:
             decoded = data.decode("utf-8")
@@ -56,6 +58,7 @@ def start_receive_server(port=65432):
     print(f"[📡] Listening for Windows clipboard on port {port}")
     while True:
         conn, addr = server.accept()
+        print(f"[🔗] Connection established from {addr}")
         threading.Thread(target=handle_client, args=(conn, addr)).start()
 
 def send_clipboard_to_windows():

@@ -12,7 +12,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog # used for asking files for sending to linux server
 
-SERVER_IP = "192.168.1.101"  # Linux IP
+SERVER_IP = "192.168.1.102"  # Linux IP
 
 SERVER_PORT = 65432 # Linux Port should be the same as server side in start_receive_server()
 # Note: Ports should be same in both server and client sides
@@ -80,7 +80,11 @@ def send_files_to_linux():
 
 def monitor_send_hotkey():
     global last_clipboard
-    print("[⌨] Press CTRL+ALT+C to send clipboard to Linux.")
+    print("[⌨] Hotkeys:")
+    print("  - CTRL+ALT+C: Send clipboard to Linux")
+    print("  - CTRL+ALT+SHIFT+F: Select and send files to Linux")
+    print("  - CTRL+ALT+SHIFT+U(Under Develop): Select and send directory to Linux")
+
     while True:
         # Send clipboard contents
         if keyboard.is_pressed("ctrl+alt+c"):
@@ -117,8 +121,11 @@ def receive_from_linux():
 
     while True:
         conn, addr = server.accept()
-        first_bytes = conn.recv(5)
+        print(f"[🔗] Connection established from {addr}")
 
+
+        first_bytes = conn.recv(5)
+        # If Data is File
         if first_bytes == b"FILE\n":
             filename = b""
             while not filename.endswith(b"\n"):
@@ -137,7 +144,7 @@ def receive_from_linux():
 
             print(f"[💾] File received from Linux and saved to {save_path}")
         else:
-            # اگر داده متنی بود
+            # If Data is Text
             data = first_bytes + conn.recv(4096)
             decoded = data.decode("utf-8")
             with open("LinuxReceived.txt", "a", encoding="utf-8") as f:

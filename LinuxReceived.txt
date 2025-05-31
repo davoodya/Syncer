@@ -1,2 +1,8 @@
 clipboardWindows
 
+clipboard.
+
+LinuxReceived.txt
+
+start_receive_server
+
