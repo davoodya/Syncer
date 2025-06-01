@@ -1,3 +1,4 @@
+import sys
 import socket
 import pyperclip
 import keyboard
@@ -111,7 +112,8 @@ def monitor_send_hotkey():
         elif keyboard.is_pressed("ctrl+alt+shift+f"):
             print("🔍 File selection triggered...")
             send_files_to_linux()
-            time.sleep(2)
+            time.sleep(1)
+
 
 def receive_from_linux():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -158,3 +160,8 @@ def receive_from_linux():
 if __name__ == "__main__":
     threading.Thread(target=monitor_send_hotkey, daemon=True).start()
     receive_from_linux()
+
+
+
+
+
