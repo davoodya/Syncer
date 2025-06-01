@@ -58,6 +58,7 @@ def send_file_to_linux(file_path):
     finally:
         sock.close()
 
+""" this function used for open File Selction Windows and sending selected files to linux server """
 def send_files_to_linux():
     root = tk.Tk()
     root.withdraw()  # مخفی‌سازی پنجره اصلی
