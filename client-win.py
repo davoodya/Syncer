@@ -31,7 +31,7 @@ def send_clipboard(text):
     except Exception as e:
         print(f"[!] Send failed: {e}")
 
-
+""" send file in clipboard(Step 1: get file path from clipboard) """
 def get_clipboard_file_path():
     try:
         shell = win32com.client.Dispatch("Shell.Application")
@@ -43,6 +43,7 @@ def get_clipboard_file_path():
     except Exception:
         return None
 
+""" send file in clipboard(Step 2: send clipboard file to linux server) """
 def send_file_to_linux(file_path):
     with open(file_path, "rb") as f:
         file_data = f.read()
