@@ -80,14 +80,14 @@ def send_file_to_windows(file_path):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((WINDOWS_CLIENT_IP, WINDOWS_RECEIVE_PORT))
 
-            # ارسال هدر برای شناسایی نوع داده (فایل)
+            # Send File Signal to windows
             s.sendall(b"FILE\n")
 
-            # ارسال نام فایل
+            # Send File Name to windows
             file_name = os.path.basename(file_path)
             s.sendall(f"{file_name}\n".encode())
 
-            # ارسال محتوای فایل
+            # Send File Data to windows
             with open(file_path, "rb") as f:
                 while True:
                     data = f.read(4096)

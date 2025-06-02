@@ -78,7 +78,7 @@ def send_files_to_linux():
             sock.close()
             print(f"[✓] Sent {file_name} to Linux.")
         except Exception as e:
-            print(f"[!] Failed to send {file_path}: {e}")
+            print(f"[!] Failed to send {file_path} to Linux.: {e}")
 
 
 def monitor_send_hotkey():
