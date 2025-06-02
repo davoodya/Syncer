@@ -100,18 +100,20 @@ def send_file_to_windows(file_path):
         print(f"[!] Could not send file to Windows: {e}")
 
 def send_directory_to_windows(directory_path):
+    archive_path = ""
     try:
-        # ایجاد آرشیو از دایرکتوری
+        # Step 1: Create a Zip Archive from selected directory
         base_name = os.path.basename(directory_path)
         archive_path = f"/tmp/{base_name}_archive.zip"
         shutil.make_archive(archive_path.replace('.zip', ''), 'zip', directory_path)
 
-        # ارسال آرشیو
+        # Sending zip archive to Windows
         send_file_to_windows(archive_path)
 
-        # حذف آرشیو موقت
+        # Remove temporary archive after sending
         os.remove(archive_path)
         print(f"[✓] Directory {base_name} sent as archive to Windows.")
+
     except Exception as e:
         print(f"[!] Could not send directory to Windows: {e}")
         if os.path.exists(archive_path):
@@ -148,6 +150,7 @@ def monitor_send_hotkeys():
                             send_file_to_windows(file_path)
                             time.sleep(0.5)  # تأخیر کوتاه بین ارسال فایل‌ها
                 time.sleep(1.5)
+
             elif keyboard.is_pressed("ctrl+alt+u"):
                 dir_path = select_directory()
                 if dir_path and os.path.isdir(dir_path):
